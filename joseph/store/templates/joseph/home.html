@@ -1,0 +1,102 @@
+{% extends 'partials/base.html' %}
+{% load static %}
+
+{% block title %}Home - Financial Books{% endblock %}
+
+{% block content %}
+<!-- Title Section -->
+<section class="container py-5">
+    <div class="row align-items-center">
+        <div class="col-md-6">
+            <h1 class="display-4" style="color: #F2545B;">Simple, Accessible & Personal</h1>
+            <p class="lead">The Legacy Hub is your one-stop platform for all things personal finance, business coaching, and personal development. Rooted in a profound commitment to transforming lives, our mission is simple yet transformative: we aim to make financial literacy accessible, affordable, and profoundly personal.</p>
+        </div>
+        <div class="col-md-6 text-center"></div>
+            {% if homepage_image %}
+                <img src="{{ homepage_image.image.url }}" class="img-fluid" alt="{{ homepage_image.caption }}" style="max-width: 100%; height: auto;">
+            {% else %}
+                <img src="{% static 'images/default-person.jpg' %}" class="img-fluid" alt="Financial Literacy" style="max-width: 100%; height: auto;">
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+<!-- Article Section -->
+<div class="container mt-5">
+    <h1>Featured Books</h1>
+    <div class="row">
+        {% for book in books %}
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                <img src="{{ book.cover_image.url }}" class="card-img-top" alt="{{ book.title }}">
+                <div class="card-body">
+                    <h5 class="card-title">{{ book.title }}</h5>
+                    <p class="card-text">{{ book.description }}</p>
+                    <p class="card-text"><strong>${{ book.price }}</strong></p>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Services Section -->
+<section class="bg-light py-5">
+    <div class="container">
+        <h2 class="text-center mb-4">Our Services</h2>
+        <div class="row text-center">
+            <div class="col-md-4">
+                <h5>Service Title 1</h5>
+                <p>Describe the service and how customers or clients can benefit from it.</p>
+            </div>
+            <div class="col-md-4">
+                <h5>Service Title 2</h5>
+                <p>Describe the service and how customers or clients can benefit from it.</p>
+            </div>
+            <div class="col-md-4">
+                <h5>Service Title 3</h5>
+                <p>Describe the service and how customers or clients can benefit from it.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Recent Projects Section -->
+<section class="container py-5">
+    <h2 class="text-center mb-5">Recent Projects</h2>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card mb-4 shadow-sm">
+                <img src="{% static 'images/project1.jpg' %}" class="card-img-top" alt="Project 1" style="height: 250px; object-fit: cover;">
+                <div class="card-body">
+                    <h5 class="card-title">Honourable mentions</h5>
+                    <p class="card-text">Share information on a previous project here to attract new clients.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card mb-4 shadow-sm">
+                <img src="{% static 'images/project2.jpg' %}" class="card-img-top" alt="Project 2" style="height: 250px; object-fit: cover;">
+                <div class="card-body">
+                    <h5 class="card-title">Honourable mentions</h5>
+                    <p class="card-text">Share information on a previous project here to attract new clients.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="text-center text-muted py-4" style="background-color: #f8f9fa;">
+    <div class="container">
+        <p>500 Terry Francine Street, San Francisco, CA 94158 | info@mysite.com | 123-456-7890</p>
+        <p>Follow us: 
+            <a href="#">Instagram</a> | 
+            <a href="#">LinkedIn</a> | 
+            <a href="#">Twitter</a> | 
+            <a href="#">Facebook</a>
+        </p>
+        <p>&copy; 2035 by Business Name. Made with <a href="#">Wix Studio</a>.</p>
+    </div>
+</footer>
+{% endblock %}

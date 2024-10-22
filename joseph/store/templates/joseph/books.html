@@ -1,0 +1,37 @@
+
+{% extends 'partials/base.html' %}
+{% load static %}
+
+{% block title %}Books - Financial Books{% endblock %}
+
+{% block content %}
+<section class="container py-5">
+    <h2 class="text-center mb-4">
+        <i class="fas fa-book"></i> Our Collection of Financial Books
+    </h2>
+
+
+    <div class="container mt-5">
+        <h1>All Books</h1>
+        <div class="row">
+            {% for book in books %}
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    <img src="{{ book.cover_image.url }}" class="card-img-top" alt="{{ book.title }}">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ book.title }}</h5>
+                        <p class="card-text">{{ book.description }}</p>
+                        <p class="card-text"><strong>${{ book.price }}</strong></p>
+                        <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+                            <div>
+                                <a class="btn btn-outline-dark mt-auto" href="{% url 'books_view' book.id%}">view book</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}

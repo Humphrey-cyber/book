@@ -1,0 +1,42 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark py-3">
+    <a class="navbar-brand" href="{% url 'home' %}" style="font-weight: bold; font-size: 1.5rem;">
+        <img src=" % static'/media/logo/logo.jpeg %'" alt="Logo" width="50" height="50" class="d-inline-block align-text-top">
+    </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+                <a class="nav-link text-light" href="{% url 'home' %}">
+                    <i class="fas fa-home"></i> Home
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-light" href="{% url 'books' %}">
+                    <i class="fas fa-book"></i> Books
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-light" href="{% url 'portfolio' %}">
+                    <i class="fas fa-briefcase"></i> Portfolio
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-light" href="{% url 'contact' %}">
+                    <i class="fas fa-envelope"></i> Contact
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-light" href="{% url 'cart_summary' %}">
+                    <i class="fas fa-shopping-cart"></i> 
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-light" href="/admin/">
+                    <i class="fas fa-cog"></i> Admin
+                </a>
+            </li>
+        </ul>
+    </div>
+</nav>
