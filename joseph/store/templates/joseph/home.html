@@ -4,6 +4,16 @@
 {% block title %}Home - Financial Books{% endblock %}
 
 {% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="{% static 'styles/styles.css' %}">
+</head>
+<body>
+
 <!-- Title Section -->
 <section class="container py-5">
     <div class="row align-items-center">
@@ -12,10 +22,10 @@
             <p class="lead">The Legacy Hub is your one-stop platform for all things personal finance, business coaching, and personal development. Rooted in a profound commitment to transforming lives, our mission is simple yet transformative: we aim to make financial literacy accessible, affordable, and profoundly personal.</p>
         </div>
         <div class="col-md-6 text-center"></div>
-            {% if homepage_image %}
-                <img src="{{ homepage_image.image.url }}" class="img-fluid" alt="{{ homepage_image.caption }}" style="max-width: 100%; height: auto;">
+            {% if profile %}
+                <img src="{{ homepage_image.profile.url }}" class="img-fluid" alt="{{ homepage_image.caption }}" style="max-width: 100%; height: auto;">
             {% else %}
-                <img src="{% static 'images/default-person.jpg' %}" class="img-fluid" alt="Financial Literacy" style="max-width: 100%; height: auto;">
+                <img src="{% static 'images/Tom.jpeg' %}" class="img-fluid" alt="Financial Literacy" style="max-width: 100%; height: auto;">
             {% endif %}
         </div>
     </div>
@@ -99,4 +109,7 @@
         <p>&copy; 2035 by Business Name. Made with <a href="#">Wix Studio</a>.</p>
     </div>
 </footer>
+
+</body>
+</html>
 {% endblock %}

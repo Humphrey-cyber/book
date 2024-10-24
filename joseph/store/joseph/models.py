@@ -63,13 +63,9 @@ class CartItem(models.Model):
 
     def __str__(self):
         return f"{self.quantity} x {self.product.name}"
-
-
-class Profile(models.Model):
-    image_url = models.CharField(max_length=2083)
  
 class HomePageImage(models.Model):
-    image = models.ImageField(upload_to='home_images/')
+    profile = models.ImageField(upload_to='home_images/')
     caption = models.CharField(max_length=255, blank=True, null=True)
     
     def _str_(self):

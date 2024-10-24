@@ -58,6 +58,6 @@ def books_page(request):
     books = Book.objects.all()  # Fetch all books for the books page
     return render(request, 'joseph/books.html', {'books': books})
 
-def books_view(request,pk):
-    books = Book.objects.get(id=pk)  
-    return render(request, 'joseph/books_view.html', {'books': books})
+def books_view(request, pk): 
+    book = Book.objects.get(id=pk) 
+    return render(request, 'joseph/books_view.html', {'books': book})
