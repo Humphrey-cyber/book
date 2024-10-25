@@ -21,8 +21,8 @@
             <h1 class="display-4" style="color: #F2545B;">Simple, Accessible & Personal</h1>
             <p class="lead">The Legacy Hub is your one-stop platform for all things personal finance, business coaching, and personal development. Rooted in a profound commitment to transforming lives, our mission is simple yet transformative: we aim to make financial literacy accessible, affordable, and profoundly personal.</p>
         </div>
-        <div class="col-md-6 text-center"></div>
-            {% if profile %}
+        <div class="col-md-6 text-center">
+            {% if homepage_image and homepage_image.profile %}
                 <img src="{{ homepage_image.profile.url }}" class="img-fluid" alt="{{ homepage_image.caption }}" style="max-width: 100%; height: auto;">
             {% else %}
                 <img src="{% static 'images/Tom.jpeg' %}" class="img-fluid" alt="Financial Literacy" style="max-width: 100%; height: auto;">
@@ -30,6 +30,8 @@
         </div>
     </div>
 </section>
+
+
 
 <!-- Article Section -->
 <div class="container mt-5">
