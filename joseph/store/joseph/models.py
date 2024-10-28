@@ -8,6 +8,16 @@ class Book(models.Model):
 
     def __str__(self):
         return self.title
+    
+    
+class HomePageContent(models.Model):
+    heading = models.CharField(max_length=255)
+    subheading = models.TextField()
+    banner_image = models.ImageField(upload_to='banner_images/', blank=True, null=True)  # New banner image field
+
+
+    def __str__(self):
+        return self.heading
 
 class Portfolio(models.Model):
     title = models.CharField(max_length=255)

@@ -1,45 +1,87 @@
 {% load static %}
 
-
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark py-3">
-    <a class="navbar-brand" href="{% url 'home' %}" style="font-weight: bold; font-size: 1.5rem;">
-        <img src=" {% static 'images/logo.jpeg' %}" alt="Logo" width="70" height="70" class="d-inline-block align-text-top">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark" style="padding: 0.5rem 1rem;">
+    <a class="navbar-brand" href="{% url 'home' %}" style="font-weight: bold; font-size: 1.25rem;">
+        <img src="{% static 'images/logo.jpeg' %}" alt="Logo" width="50" height="50" class="d-inline-block align-text-top" style="border-radius: 50%; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);">
     </a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav ml-auto">
+        <ul class="navbar-nav ml-auto" style="font-size: 0.9rem;">
             <li class="nav-item">
-                <a class="nav-link text-light" href="{% url 'home' %}">
-                    <i class="fas fa-home"></i> Home
+                <a class="nav-link text-light" href="{% url 'home' %}" style="padding: 0.5rem; transition: transform 0.2s;">
+                    <i class="fas fa-home" style="font-size: 1.2rem; color: #FFC107; animation: bounce 2s infinite;"></i> Home
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link text-light" href="{% url 'books' %}">
-                    <i class="fas fa-book"></i> Books
+                <a class="nav-link text-light" href="{% url 'books' %}" style="padding: 0.5rem; transition: transform 0.2s;">
+                    <i class="fas fa-book" style="font-size: 1.2rem; color: #17A2B8; animation: rotate 4s linear infinite;"></i> Books
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link text-light" href="{% url 'portfolio' %}">
-                    <i class="fas fa-briefcase"></i> Portfolio
+                <a class="nav-link text-light" href="{% url 'portfolio' %}" style="padding: 0.5rem; transition: transform 0.2s;">
+                    <i class="fas fa-briefcase" style="font-size: 1.2rem; color: #28A745; animation: shake 1.5s ease-in-out infinite;"></i> Portfolio
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link text-light" href="{% url 'contact' %}">
-                    <i class="fas fa-envelope"></i> Contact
+                <a class="nav-link text-light" href="{% url 'contact' %}" style="padding: 0.5rem; transition: transform 0.2s;">
+                    <i class="fas fa-envelope" style="font-size: 1.2rem; color: #DC3545; animation: pulse 2s infinite;"></i> Contact
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link text-light" href="{% url 'cart_summary' %}">
-                    <i class="fas fa-shopping-cart"></i> 
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link text-light" href="/admin/">
-                    <i class="fas fa-cog"></i> Admin
+                <a class="nav-link text-light" href="{% url 'cart_summary' %}" style="padding: 0.5rem; transition: transform 0.2s;">
+                    <i class="fas fa-shopping-cart" style="font-size: 1.2rem; color: #FFC107; animation: bounce 2s infinite;"></i>
                 </a>
             </li>
         </ul>
     </div>
 </nav>
+
+<!-- Inline CSS for animations -->
+<style>
+    /* Bouncing animation */
+    @keyframes bounce {
+        0%, 20%, 50%, 80%, 100% {
+            transform: translateY(0);
+        }
+        40% {
+            transform: translateY(-10px);
+        }
+        60% {
+            transform: translateY(-5px);
+        }
+    }
+
+    /* Rotating animation */
+    @keyframes rotate {
+        0% {
+            transform: rotate(0deg);
+        }
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+
+    /* Shaking animation */
+    @keyframes shake {
+        0% { transform: translateX(0); }
+        25% { transform: translateX(-3px); }
+        50% { transform: translateX(3px); }
+        75% { transform: translateX(-3px); }
+        100% { transform: translateX(0); }
+    }
+
+    /* Pulsing animation */
+    @keyframes pulse {
+        0% {
+            transform: scale(1);
+        }
+        50% {
+            transform: scale(1.1);
+        }
+        100% {
+            transform: scale(1);
+        }
+    }
+</style>

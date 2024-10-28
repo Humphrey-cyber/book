@@ -1,5 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import Book, Portfolio, Contact, Product, Cart, CartItem, HomePageImage, Produce
+from .models import Book, Portfolio, Contact, Product, Cart, CartItem, HomePageImage, Produce, HomePageContent
+
 
 def cart_summary(request):
     return render(request, "joseph/cart_view.html", {})
@@ -15,11 +16,13 @@ def cart_update(request):
 
 def home(request):
     homepage_image = HomePageImage.objects.last()
+    homepage_content = HomePageContent.objects.last()
     books = Book.objects.all()[:3]  # Fetch the first 3 books for the homepage
     products = Produce.objects.all()  # Fetch all products for display
 
     return render(request, 'joseph/home.html', {
         'homepage_image': homepage_image,
+        'homepage_content': homepage_content,
         'books': books,
         'products': products,
     })
