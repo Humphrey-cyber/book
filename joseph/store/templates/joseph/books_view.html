@@ -14,7 +14,7 @@
             <h3 class="text-muted" style="font-size: 1.5rem;">${{ book.price }}</h3>
 
             <div class="my-4">
-                <button class="btn btn-success btn-lg mb-2" style="width: 100%; font-size: 1rem;" onclick="addToCart()">Add to Cart</button>
+                <button class="btn btn-success btn-lg mb-2" style="width: 100%; font-size: 1rem;" onclick="addToCart('{{ book.id }}', '{{ book.title }}', '{{ book.cover_image.url }}', {{ book.price }})">Add to Cart</button>
                 <button class="btn btn-outline-secondary btn-lg" style="width: 100%; font-size: 1rem;">Buy Now</button>
             </div>
 
@@ -65,7 +65,7 @@
     <h2 style="font-size: 1.5rem; text-align: center; padding-bottom: 1rem; border-bottom: 1px solid #eee;">Your Cart</h2>
 
     <div id="cartItems" style="margin-top: 20px;">
-        <!-- Cart items will be added dynamically here -->
+        <!-- Cart items will be dynamically added here -->
     </div>
 
     <div class="cart-total" style="text-align: center; font-size: 1.2rem; font-weight: bold; margin: 20px 0;">
@@ -75,65 +75,110 @@
 </div>
 
 <script>
+    let cart = [];
+    let total = 0;
+
+    // Initialize cart from localStorage
+    function initializeCart() {
+        const storedCart = localStorage.getItem('cart');
+        if (storedCart) {
+            cart = JSON.parse(storedCart);
+            total = cart.reduce((sum, item) => sum + item.price, 0);
+            updateCartDisplay();
+        }
+    }
+
     // Function to toggle cart panel visibility
     function toggleCart() {
         const cartPanel = document.getElementById('cartPanel');
         cartPanel.style.right = cartPanel.style.right === '0px' ? '-400px' : '0px';
     }
 
-    // Function to add item to cart and show cart panel
-    function addToCart() {
-        const itemCount = document.getElementById("itemCount");
-        const cartTotal = document.getElementById("cartTotal");
-        
-        // Increment item count in the cart icon
-        itemCount.textContent = parseInt(itemCount.textContent) + 1;
-        
-        // Update cart total
-        const bookPrice = parseFloat("{{ book.price }}");
-        cartTotal.textContent = (parseFloat(cartTotal.textContent) + bookPrice).toFixed(2);
-        
-        // Dynamically add the item to the cart panel
-        const cartItems = document.getElementById("cartItems");
-        const cartItem = document.createElement("div");
-        cartItem.classList.add("cart-item");
-        cartItem.style.display = "flex";
-        cartItem.style.alignItems = "center";
-        cartItem.style.marginBottom = "15px";
-        cartItem.style.paddingBottom = "15px";
-        cartItem.style.borderBottom = "1px solid #eee";
-        
-        cartItem.innerHTML = `
-            <img src="{{ book.cover_image.url }}" alt="{{ book.title }}" style="width: 80px; height: 80px; object-fit: cover; margin-right: 10px; border-radius: 5px;">
-            <div style="flex-grow: 1;">
-                <h4 style="margin: 0;">{{ book.title }}</h4>
-                <div style="font-size: 0.9rem; color: #666;">Price: ${{ book.price }}</div>
-                <a href="javascript:void(0);" class="remove-link" style="color: #d9534f; font-size: 0.85rem; text-decoration: none;" onclick="removeFromCart(this, {{ book.price }})">Remove</a>
-            </div>
-        `;
-        
-        cartItems.appendChild(cartItem);
-        toggleCart();
+    // Function to add item to cart and update item count
+    function addToCart(id, title, image, price) {
+        const item = {
+            id: id,
+            title: title,
+            image: image,
+            price: price
+        };
+        cart.push(item); // Add new instance to the cart array
+        total += price; // Update total
+
+        // Save cart to localStorage
+        localStorage.setItem('cart', JSON.stringify(cart));
+
+        updateCartDisplay();
+
+        // Show a notification for adding to the cart
+        alert(`${title} added to the cart!`);
+
+        // Update item count in cart icon
+        const itemCountElement = document.getElementById("itemCount");
+        itemCountElement.textContent = cart.length;
+        itemCountElement.style.display = 'block';
     }
 
-    // Function to remove item from cart
-    function removeFromCart(element, price) {
-        const itemCount = document.getElementById("itemCount");
-        const cartTotal = document.getElementById("cartTotal");
-        
-        // Decrement the item count in the cart icon
-        itemCount.textContent = Math.max(0, parseInt(itemCount.textContent) - 1);
-        
+    // Function to update the cart display
+    function updateCartDisplay() {
+        const cartItemsContainer = document.getElementById("cartItems");
+        const cartTotalElement = document.getElementById("cartTotal");
+
+        cartItemsContainer.innerHTML = ''; // Clear previous display
+
+        // Iterate over each item in the cart array and display as a separate row
+        cart.forEach((item, index) => {
+            const cartItem = document.createElement("div");
+            cartItem.classList.add("cart-item");
+            cartItem.style.display = "flex";
+            cartItem.style.alignItems = "center";
+            cartItem.style.marginBottom = "15px";
+            cartItem.style.paddingBottom = "15px";
+            cartItem.style.borderBottom = "1px solid #eee";
+            
+            cartItem.innerHTML = `
+                <img src="${item.image}" alt="${item.title}" style="width: 80px; height: 80px; object-fit: cover; margin-right: 10px; border-radius: 5px;">
+                <div style="flex-grow: 1;">
+                    <h4 style="margin: 0;">${item.title}</h4>
+                    <div style="font-size: 0.9rem; color: #666;">Price: $${item.price}</div>
+                    <a href="javascript:void(0);" class="remove-link" style="color: #d9534f; font-size: 0.85rem; text-decoration: none;" onclick="removeFromCart(${index})">Remove</a>
+                </div>
+            `;
+            
+            cartItemsContainer.appendChild(cartItem);
+        });
+
         // Update cart total
-        cartTotal.textContent = (parseFloat(cartTotal.textContent) - price).toFixed(2);
-        
-        // Remove the item from the cart visually
-        element.parentElement.parentElement.remove();
+        cartTotalElement.textContent = total.toFixed(2);
+
+        // Update item count in cart icon
+        const itemCountElement = document.getElementById("itemCount");
+        itemCountElement.textContent = cart.length;
+        if (cart.length > 0) {
+            itemCountElement.style.display = 'block';
+        } else {
+            itemCountElement.style.display = 'none';
+        }
+    }
+
+    // Function to remove an item from the cart by index
+    function removeFromCart(index) {
+        const item = cart[index];
+        total -= item.price; // Deduct the price from total
+        cart.splice(index, 1); // Remove item from cart array
+
+        // Save updated cart to localStorage
+        localStorage.setItem('cart', JSON.stringify(cart));
+
+        updateCartDisplay();
     }
 
     // Placeholder function for checkout button
     function proceedToCheckout() {
         alert('Proceeding to checkout...');
     }
+
+    // Initialize cart when the page loads
+    window.onload = initializeCart;
 </script>
 {% endblock %}
