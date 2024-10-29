@@ -2,7 +2,15 @@ from django.contrib import admin
 from .models import Book, Portfolio, HomePageImage, Produce, HomePageContent, Service, Project
 
 class BooksAdmin(admin.ModelAdmin):
-    list_display = ('title', 'description', 'cover_image', 'price')
+    list_display = ('title', 'description', 'cover_image', 'price', 'file_size')
+    fieldsets = (
+        (None, {
+            'fields': ('title', 'description', 'price', 'cover_image', 'file_size')
+        }),
+        ('Social Media Links', {
+            'fields': ('facebook_link', 'twitter_link', 'instagram_link', 'whatsapp_link', 'youtube_link')
+        }),
+    )
 
 class PortfolioAdmin(admin.ModelAdmin):
     list_display = ('title', 'description', 'image')

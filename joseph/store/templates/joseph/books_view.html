@@ -1,18 +1,139 @@
 {% extends 'partials/base.html' %}
 {% load static %}
 {% block content %}
-<div class="card mb-3">
-    <div class="row g-0">
-      <div class="col-md-4">
-        <img src="{{ book.cover_image.url }}" class="card-img-top" alt="{{ book.title }}">
-      </div>
-      <div class="col-md-8">
-        <div class="card-body">
-          <h5 class="card-title" src="{{ book.title }}"></h5>
-          <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-          <p class="card-text"><small class="text-body-secondary">Last updated 3 mins ago</small></p>
+<div class="container mt-5">
+    <div class="row">
+        <!-- Book Image Section -->
+        <div class="col-md-6">
+            <img src="{{ book.cover_image.url }}" class="img-fluid rounded" alt="{{ book.title }}" style="width: 100%; max-height: 600px; object-fit: cover;">
         </div>
-      </div>
+
+        <!-- Book Details Section -->
+        <div class="col-md-6">
+            <h2 class="mb-3" style="font-size: 2rem; color: #333;">{{ book.title }}</h2>
+            <h3 class="text-muted" style="font-size: 1.5rem;">${{ book.price }}</h3>
+
+            <div class="my-4">
+                <button class="btn btn-success btn-lg mb-2" style="width: 100%; font-size: 1rem;" onclick="addToCart()">Add to Cart</button>
+                <button class="btn btn-outline-secondary btn-lg" style="width: 100%; font-size: 1rem;">Buy Now</button>
+            </div>
+
+            <p class="mt-4" style="color: #666; font-size: 1rem; line-height: 1.6;">
+                {{ book.description }}
+            </p>
+
+            <p class="text-muted" style="font-size: 0.85rem;">
+                You will get a PDF ({{ book.file_size }}) file
+            </p>
+
+            <!-- Social Share Links -->
+            <div class="mt-3">
+                <span>Share:</span>
+                {% if book.facebook_link %}
+                    <a href="{{ book.facebook_link }}" target="_blank" class="mx-2 text-dark" style="font-size: 1.2rem;">
+                        <i class="fab fa-facebook"></i>
+                    </a>
+                {% endif %}
+                {% if book.twitter_link %}
+                    <a href="{{ book.twitter_link }}" target="_blank" class="mx-2 text-dark" style="font-size: 1.2rem;">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                {% endif %}
+                {% if book.instagram_link %}
+                    <a href="{{ book.instagram_link }}" target="_blank" class="mx-2 text-dark" style="font-size: 1.2rem;">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                {% endif %}
+                {% if book.whatsapp_link %}
+                    <a href="{{ book.whatsapp_link }}" target="_blank" class="mx-2 text-dark" style="font-size: 1.2rem;">
+                        <i class="fab fa-whatsapp"></i>
+                    </a>
+                {% endif %}
+                {% if book.youtube_link %}
+                    <a href="{{ book.youtube_link }}" target="_blank" class="mx-2 text-dark" style="font-size: 1.2rem;">
+                        <i class="fab fa-youtube"></i>
+                    </a>
+                {% endif %}
+            </div>
+        </div>
     </div>
-  </div>
+</div>
+
+<!-- Cart Panel -->
+<div class="cart-panel" id="cartPanel" style="position: fixed; top: 0; right: -400px; width: 400px; height: 100%; background-color: #fff; box-shadow: -2px 0 5px rgba(0, 0, 0, 0.5); transition: right 0.4s ease; padding: 20px; overflow-y: auto; z-index: 1000;">
+    <button class="close-cart" onclick="toggleCart()" style="position: absolute; top: 10px; right: 10px; background: transparent; border: none; font-size: 1.5rem; cursor: pointer; color: #333;">×</button>
+    <h2 style="font-size: 1.5rem; text-align: center; padding-bottom: 1rem; border-bottom: 1px solid #eee;">Your Cart</h2>
+
+    <div id="cartItems" style="margin-top: 20px;">
+        <!-- Cart items will be added dynamically here -->
+    </div>
+
+    <div class="cart-total" style="text-align: center; font-size: 1.2rem; font-weight: bold; margin: 20px 0;">
+        Total: $<span id="cartTotal">0.00</span>
+    </div>
+    <button class="checkout-btn" style="width: 100%; background-color: #28a745; color: #fff; border: none; padding: 10px; font-size: 1rem; cursor: pointer; border-radius: 5px;" onclick="proceedToCheckout()">Proceed to Checkout</button>
+</div>
+
+<script>
+    // Function to toggle cart panel visibility
+    function toggleCart() {
+        const cartPanel = document.getElementById('cartPanel');
+        cartPanel.style.right = cartPanel.style.right === '0px' ? '-400px' : '0px';
+    }
+
+    // Function to add item to cart and show cart panel
+    function addToCart() {
+        const itemCount = document.getElementById("itemCount");
+        const cartTotal = document.getElementById("cartTotal");
+        
+        // Increment item count in the cart icon
+        itemCount.textContent = parseInt(itemCount.textContent) + 1;
+        
+        // Update cart total
+        const bookPrice = parseFloat("{{ book.price }}");
+        cartTotal.textContent = (parseFloat(cartTotal.textContent) + bookPrice).toFixed(2);
+        
+        // Dynamically add the item to the cart panel
+        const cartItems = document.getElementById("cartItems");
+        const cartItem = document.createElement("div");
+        cartItem.classList.add("cart-item");
+        cartItem.style.display = "flex";
+        cartItem.style.alignItems = "center";
+        cartItem.style.marginBottom = "15px";
+        cartItem.style.paddingBottom = "15px";
+        cartItem.style.borderBottom = "1px solid #eee";
+        
+        cartItem.innerHTML = `
+            <img src="{{ book.cover_image.url }}" alt="{{ book.title }}" style="width: 80px; height: 80px; object-fit: cover; margin-right: 10px; border-radius: 5px;">
+            <div style="flex-grow: 1;">
+                <h4 style="margin: 0;">{{ book.title }}</h4>
+                <div style="font-size: 0.9rem; color: #666;">Price: ${{ book.price }}</div>
+                <a href="javascript:void(0);" class="remove-link" style="color: #d9534f; font-size: 0.85rem; text-decoration: none;" onclick="removeFromCart(this, {{ book.price }})">Remove</a>
+            </div>
+        `;
+        
+        cartItems.appendChild(cartItem);
+        toggleCart();
+    }
+
+    // Function to remove item from cart
+    function removeFromCart(element, price) {
+        const itemCount = document.getElementById("itemCount");
+        const cartTotal = document.getElementById("cartTotal");
+        
+        // Decrement the item count in the cart icon
+        itemCount.textContent = Math.max(0, parseInt(itemCount.textContent) - 1);
+        
+        // Update cart total
+        cartTotal.textContent = (parseFloat(cartTotal.textContent) - price).toFixed(2);
+        
+        // Remove the item from the cart visually
+        element.parentElement.parentElement.remove();
+    }
+
+    // Placeholder function for checkout button
+    function proceedToCheckout() {
+        alert('Proceeding to checkout...');
+    }
+</script>
 {% endblock %}

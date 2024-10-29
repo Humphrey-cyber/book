@@ -1,33 +1,178 @@
-<!DOCTYPE html>
+{% comment %} <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Shopping Cart</title>
+    <style>
+        /* Cart Button with Item Count */
+        .cart-button {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            z-index: 1100;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+        }
+        .cart-button .item-count {
+            background-color: #ff5a5f;
+            border-radius: 50%;
+            padding: 3px 8px;
+            font-size: 0.9rem;
+            margin-left: 5px;
+        }
+
+        /* Cart Panel Styles */
+        .cart-panel {
+            position: fixed;
+            top: 0;
+            right: -400px; /* Initially hidden to the right */
+            width: 400px;
+            height: 100%;
+            background-color: #fff;
+            box-shadow: -2px 0 5px rgba(0, 0, 0, 0.5);
+            transition: right 0.4s ease;
+            padding: 20px;
+            overflow-y: auto;
+            z-index: 1000;
+        }
+        .cart-panel.open {
+            right: 0; /* Slide in */
+        }
+        .cart-panel h2 {
+            font-size: 1.5rem;
+            margin: 0;
+            text-align: center;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #eee;
+        }
+        .cart-item {
+            display: flex;
+            align-items: center;
+            margin: 1rem 0;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #eee;
+        }
+        .cart-item img {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            margin-right: 10px;
+            border-radius: 5px;
+        }
+        .cart-item-details {
+            flex-grow: 1;
+        }
+        .cart-item-price, .cart-item-quantity {
+            font-size: 0.9rem;
+            color: #666;
+        }
+        .cart-item .remove-link {
+            color: #d9534f;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 0.85rem;
+        }
+
+        /* Total and Checkout Section */
+        .cart-total {
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+        .checkout-btn {
+            width: 100%;
+            background-color: #28a745;
+            color: #fff;
+            border: none;
+            padding: 10px;
+            font-size: 1rem;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        .checkout-btn:hover {
+            background-color: #218838;
+        }
+
+        /* Close Button */
+        .close-cart {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: transparent;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #333;
+        }
+    </style>
 </head>
 <body>
-    <h1>Your Shopping Cart</h1>
+    <button class="cart-button" onclick="toggleCart()">
+        🛒 Cart 
+        <span class="item-count" id="itemCount">0</span>
+    </button>
 
-    {% if cart_items %}
-        <ul>
-            {% for item in cart_items %}
-                <li>
-                    {{ item.product.name }} - {{ item.quantity }} x ${{ item.product.price }} = ${{ item.total_price }}
-                    <form method="POST" action="{% url 'update_cart' item.id %}">
-                        {% csrf_token %}
-                        <input type="number" name="quantity" value="{{ item.quantity }}" min="1">
-                        <button type="submit">Update</button>
-                    </form>
-                    <a href="{% url 'remove_from_cart' item.id %}">Remove</a>
-                </li>
-            {% endfor %}
-        </ul>
+    <div class="cart-panel" id="cartPanel">
+        <button class="close-cart" onclick="toggleCart()">×</button>
+        <h2>Your Cart</h2>
 
-        <h3>Total: ${{ cart.total_price }}</h3>
-        <a href="{% url 'clear_cart' %}">Clear Cart</a>
-        <a href="#">Proceed to Checkout</a>
-    {% else %}
-        <p>Your cart is empty.</p>
-    {% endif %}
+        {% if cart_items %}
+            <div class="cart-items">
+                {% for item in cart_items %}
+                    <div class="cart-item">
+                        <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}">
+                        <div class="cart-item-details">
+                            <h4 style="margin: 0;">{{ item.product.name }}</h4>
+                            <div class="cart-item-price">Price: ${{ item.product.price }}</div>
+                            <div class="cart-item-quantity">Quantity: {{ item.quantity }}</div>
+                            <div>Total: ${{ item.total_price }}</div>
+                            <a href="#" onclick="removeFromCart({{ item.id }})" class="remove-link">Remove</a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <div class="cart-total">
+                Total: ${{ cart.total_price }}
+            </div>
+            <button class="checkout-btn">Proceed to Checkout</button>
+        {% else %}
+            <p>Your cart is empty.</p>
+        {% endif %}
+    </div>
+
+    <script>
+        // Function to toggle cart panel visibility
+        function toggleCart() {
+            const cartPanel = document.getElementById('cartPanel');
+            cartPanel.classList.toggle('open');
+        }
+
+        // Function to add item to cart
+        function addToCart() {
+            // Simulating adding to cart
+            const itemCount = document.getElementById("itemCount");
+            itemCount.textContent = parseInt(itemCount.textContent) + 1;
+            toggleCart();
+            alert('Item added to cart!');
+        }
+
+        // Function to remove item from cart (requires backend update for real functionality)
+        function removeFromCart(itemId) {
+            alert('Removing item from cart...');
+            // Here you would make a request to the backend to remove the item
+            location.reload();
+        }
+    </script>
 </body>
-</html>
+</html> {% endcomment %}

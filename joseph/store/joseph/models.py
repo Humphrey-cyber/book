@@ -5,10 +5,15 @@ class Book(models.Model):
     description = models.TextField()
     price = models.DecimalField(max_digits=6, decimal_places=2)
     cover_image = models.ImageField(upload_to='book_covers/', blank=True, null=True)
+    file_size = models.CharField(max_length=50, blank=True, null=True)  # For PDF file size
+    facebook_link = models.URLField(blank=True, null=True)
+    twitter_link = models.URLField(blank=True, null=True)
+    instagram_link = models.URLField(blank=True, null=True)
+    whatsapp_link = models.URLField(blank=True, null=True)
+    youtube_link = models.URLField(blank=True, null=True)
 
     def __str__(self):
         return self.title
-    
     
 class HomePageContent(models.Model):
     heading = models.CharField(max_length=255)
@@ -44,25 +49,25 @@ class Product(models.Model):
     def __str__(self):
         return self.name
 
-class Cart(models.Model):
-    session_key = models.CharField(max_length=40, default='', blank=True)
+# class Cart(models.Model):
+#     session_key = models.CharField(max_length=40, default='', blank=True)
 
-    def __str__(self):
-        return f"Cart {self.id}"
+#     def __str__(self):
+#         return f"Cart {self.id}"
 
-    def total_price(self):
-        return sum(item.total_price() for item in self.cartitem_set.all())
+#     def total_price(self):
+#         return sum(item.total_price() for item in self.cartitem_set.all())
 
-class CartItem(models.Model):
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
-    quantity = models.PositiveIntegerField(default=1)
+# class CartItem(models.Model):
+#     product = models.ForeignKey(Product, on_delete=models.CASCADE)
+#     cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
+#     quantity = models.PositiveIntegerField(default=1)
 
-    def total_price(self):
-        return self.quantity * self.product.price
+#     def total_price(self):
+#         return self.quantity * self.product.price
 
-    def __str__(self):
-        return f"{self.quantity} x {self.product.name}"
+#     def __str__(self):
+#         return f"{self.quantity} x {self.product.name}"
 
 class HomePageImage(models.Model):
     profile = models.ImageField(upload_to='home_images/')
