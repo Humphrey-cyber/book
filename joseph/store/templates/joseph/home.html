@@ -81,22 +81,17 @@
 </div>
 
 <!-- Services Section -->
+<!-- Our Services Section -->
 <section class="bg-light py-5">
     <div class="container">
         <h2 class="text-center mb-4">Our Services</h2>
         <div class="row text-center">
-            <div class="col-md-4">
-                <h5>Service Title 1</h5>
-                <p>Describe the service and how customers or clients can benefit from it.</p>
-            </div>
-            <div class="col-md-4">
-                <h5>Service Title 2</h5>
-                <p>Describe the service and how customers or clients can benefit from it.</p>
-            </div>
-            <div class="col-md-4">
-                <h5>Service Title 3</h5>
-                <p>Describe the service and how customers or clients can benefit from it.</p>
-            </div>
+            {% for service in services %}
+                <div class="col-md-4">
+                    <h5>{{ service.title }}</h5>
+                    <p>{{ service.description }}</p>
+                </div>
+            {% endfor %}
         </div>
     </div>
 </section>
@@ -105,26 +100,25 @@
 <section class="container py-5">
     <h2 class="text-center mb-5">Recent Projects</h2>
     <div class="row">
-        <div class="col-md-6">
-            <div class="card mb-4 shadow-sm">
-                <img src="{% static 'images/project1.jpg' %}" class="card-img-top" alt="Project 1" style="height: 250px; object-fit: cover;">
-                <div class="card-body">
-                    <h5 class="card-title">Honourable mentions</h5>
-                    <p class="card-text">Share information on a previous project here to attract new clients.</p>
+        {% for project in projects %}
+            <div class="col-md-6">
+                <div class="card mb-4 shadow-sm">
+                    {% if project.image %}
+                        <img src="{{ project.image.url }}" class="card-img-top" alt="{{ project.title }}" style="height: 250px; object-fit: cover;">
+                    {% endif %}
+                    <div class="card-body">
+                        <h5 class="card-title">{{ project.title }}</h5>
+                        <p class="card-text">{{ project.description }}</p>
+                        {% if project.project_link %}
+                            <a href="{{ project.project_link }}" class="btn btn-primary">Learn More</a>
+                        {% endif %}
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="col-md-6">
-            <div class="card mb-4 shadow-sm">
-                <img src="{% static 'images/project2.jpg' %}" class="card-img-top" alt="Project 2" style="height: 250px; object-fit: cover;">
-                <div class="card-body">
-                    <h5 class="card-title">Honourable mentions</h5>
-                    <p class="card-text">Share information on a previous project here to attract new clients.</p>
-                </div>
-            </div>
-        </div>
+        {% endfor %}
     </div>
 </section>
+
 
 <!-- Footer -->
 <footer class="text-center text-muted py-4" style="background-color: #f8f9fa;">
