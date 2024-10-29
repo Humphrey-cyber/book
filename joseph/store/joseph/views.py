@@ -30,6 +30,10 @@ def home(request):
         'services': services,
         'projects': projects,
     })
+    
+def all_featured_books(request):
+    books = Book.objects.all()  # Fetch all books for the featured books page
+    return render(request, 'joseph/featured_books.html', {'books': books})
 
 def portfolio(request):
     pics = Portfolio.objects.all()
