@@ -15,7 +15,7 @@
 
             <div class="my-4">
                 <button class="btn btn-success btn-lg mb-2" style="width: 100%; font-size: 1rem;" onclick="addToCart('{{ book.id }}', '{{ book.title }}', '{{ book.cover_image.url }}', {{ book.price }})">Add to Cart</button>
-                <button class="btn btn-outline-secondary btn-lg" style="width: 100%; font-size: 1rem;">Buy Now</button>
+                <button class="btn btn-outline-secondary btn-lg" style="width: 100%; font-size: 1rem;" onclick="openCheckoutModal()">Buy Now</button>
             </div>
 
             <p class="mt-4" style="color: #666; font-size: 1rem; line-height: 1.6;">
@@ -25,36 +25,6 @@
             <p class="text-muted" style="font-size: 0.85rem;">
                 You will get a PDF ({{ book.file_size }}) file
             </p>
-
-            <!-- Social Share Links -->
-            <div class="mt-3">
-                <span>Share:</span>
-                {% if book.facebook_link %}
-                    <a href="{{ book.facebook_link }}" target="_blank" class="mx-2 text-dark" style="font-size: 1.2rem;">
-                        <i class="fab fa-facebook"></i>
-                    </a>
-                {% endif %}
-                {% if book.twitter_link %}
-                    <a href="{{ book.twitter_link }}" target="_blank" class="mx-2 text-dark" style="font-size: 1.2rem;">
-                        <i class="fab fa-twitter"></i>
-                    </a>
-                {% endif %}
-                {% if book.instagram_link %}
-                    <a href="{{ book.instagram_link }}" target="_blank" class="mx-2 text-dark" style="font-size: 1.2rem;">
-                        <i class="fab fa-instagram"></i>
-                    </a>
-                {% endif %}
-                {% if book.whatsapp_link %}
-                    <a href="{{ book.whatsapp_link }}" target="_blank" class="mx-2 text-dark" style="font-size: 1.2rem;">
-                        <i class="fab fa-whatsapp"></i>
-                    </a>
-                {% endif %}
-                {% if book.youtube_link %}
-                    <a href="{{ book.youtube_link }}" target="_blank" class="mx-2 text-dark" style="font-size: 1.2rem;">
-                        <i class="fab fa-youtube"></i>
-                    </a>
-                {% endif %}
-            </div>
         </div>
     </div>
 </div>
@@ -71,7 +41,36 @@
     <div class="cart-total" style="text-align: center; font-size: 1.2rem; font-weight: bold; margin: 20px 0;">
         Total: $<span id="cartTotal">0.00</span>
     </div>
-    <button class="checkout-btn" style="width: 100%; background-color: #28a745; color: #fff; border: none; padding: 10px; font-size: 1rem; cursor: pointer; border-radius: 5px;" onclick="proceedToCheckout()">Proceed to Checkout</button>
+    <button class="checkout-btn" style="width: 100%; background-color: #28a745; color: #fff; border: none; padding: 10px; font-size: 1rem; cursor: pointer; border-radius: 5px;" onclick="openCheckoutModal()">Proceed to Checkout</button>
+</div>
+
+<!-- Checkout Modal -->
+<div id="checkoutModal" class="modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000;">
+    <div class="modal-content" style="position: relative; background: white; max-width: 500px; margin: 10% auto; padding: 20px; border-radius: 8px;">
+        <span class="close" onclick="closeCheckoutModal()" style="position: absolute; top: 10px; right: 15px; cursor: pointer;">&times;</span>
+        <h2>Checkout</h2>
+        <form id="checkoutForm" onsubmit="submitCheckout(event)">
+            <div style="margin-bottom: 15px;">
+                <label>Email Address</label>
+                <input type="email" id="email" name="email" required style="width: 100%; padding: 10px; margin-top: 5px; border-radius: 5px; border: 1px solid #ccc;">
+            </div>
+            <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+                <div style="flex: 1;">
+                    <label>First Name</label>
+                    <input type="text" id="firstName" name="firstName" required style="width: 100%; padding: 10px; margin-top: 5px; border-radius: 5px; border: 1px solid #ccc;">
+                </div>
+                <div style="flex: 1;">
+                    <label>Last Name</label>
+                    <input type="text" id="lastName" name="lastName" required style="width: 100%; padding: 10px; margin-top: 5px; border-radius: 5px; border: 1px solid #ccc;">
+                </div>
+            </div>
+            <div style="margin-bottom: 15px;">
+                <label>Phone Number (for Mpesa)</label>
+                <input type="tel" id="phoneNumber" name="phoneNumber" required style="width: 100%; padding: 10px; margin-top: 5px; border-radius: 5px; border: 1px solid #ccc;">
+            </div>
+            <button type="submit" class="btn btn-primary" style="width: 100%; padding: 10px; font-size: 1rem;">Pay with Mpesa</button>
+        </form>
+    </div>
 </div>
 
 <script>
@@ -173,9 +172,47 @@
         updateCartDisplay();
     }
 
-    // Placeholder function for checkout button
-    function proceedToCheckout() {
-        alert('Proceeding to checkout...');
+    // Checkout modal functions
+    function openCheckoutModal() {
+        document.getElementById("checkoutModal").style.display = "block";
+    }
+
+    function closeCheckoutModal() {
+        document.getElementById("checkoutModal").style.display = "none";
+    }
+
+    // Function to handle form submission
+    function submitCheckout(event) {
+        event.preventDefault(); // Prevent default form submission
+        const email = document.getElementById("email").value;
+        const firstName = document.getElementById("firstName").value;
+        const lastName = document.getElementById("lastName").value;
+        const phoneNumber = document.getElementById("phoneNumber").value;
+
+        fetch("{% url 'mpesa_checkout' %}", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": "{{ csrf_token }}",
+            },
+            body: JSON.stringify({
+                email: email,
+                first_name: firstName,
+                last_name: lastName,
+                phone_number: phoneNumber,
+                amount: {{ book.price }} // Total cart amount
+            }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert("Payment initiated successfully. Complete the payment on your phone.");
+                closeCheckoutModal();
+            } else {
+                alert("Error initiating payment: " + data.error);
+            }
+        })
+        .catch(error => console.error("Error:", error));
     }
 
     // Initialize cart when the page loads
