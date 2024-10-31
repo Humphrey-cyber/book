@@ -13,6 +13,11 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 from pathlib import Path
 import os
 
+
+
+
+
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -47,6 +52,9 @@ INSTALLED_APPS = [
     'widget_tweaks',
 ]
 
+INTASEND_SECRET_KEY = "ISSecretKey_live_54dff772-8af3-4a62-b00d-b28264acb32f"
+INTASEND_PUBLISHABLE_KEY = "ISPubKey_live_b4d328b3-9e71-463f-aa3b-17eb4e69c02d"
+RECEIVER_PHONE_NUMBER = "0792881220"  # Your receiving phone number
 
 
 MEDIA_URL = '/media/'

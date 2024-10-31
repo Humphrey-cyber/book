@@ -1,19 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Book, Portfolio, Contact, Product,HomePageImage, Produce, HomePageContent, Service, Project
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-import json
-
-@csrf_exempt
-def mpesa_checkout(request):
-    if request.method == 'POST':
-        data = json.loads(request.body)
-        # Handle the payment processing here with Mpesa
-        # For simplicity, let's return a success response
-        return JsonResponse({'success': True, 'message': 'Payment initiated successfully'})
-    return JsonResponse({'success': False, 'error': 'Invalid request'}, status=400)
-
-
+# views.py
 
 def home(request):
     homepage_image = HomePageImage.objects.last()
@@ -49,6 +36,12 @@ def books_page(request):
     books = Book.objects.all()  # Fetch all books for the books page
     return render(request, 'joseph/books.html', {'books': books})
 
-def books_view(request, pk): 
+def books_view(request, pk):
+   
     book = get_object_or_404(Book, id=pk)
-    return render(request, 'joseph/books_view.html', {'book': book})
+    
+    # Calculate the amount in KES
+    amount_in_kes = book.price * 130  
+    
+    # Pass both the book and the calculated KES amount to the template
+    return render(request, 'joseph/books_view.html', {'book': book, 'amount_in_kes': amount_in_kes})
