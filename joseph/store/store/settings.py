@@ -52,9 +52,7 @@ INSTALLED_APPS = [
     'widget_tweaks',
 ]
 
-INTASEND_SECRET_KEY = "ISSecretKey_live_54dff772-8af3-4a62-b00d-b28264acb32f"
-INTASEND_PUBLISHABLE_KEY = "ISPubKey_live_b4d328b3-9e71-463f-aa3b-17eb4e69c02d"
-RECEIVER_PHONE_NUMBER = "0792881220"  # Your receiving phone number
+
 
 
 MEDIA_URL = '/media/'
@@ -106,6 +104,14 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'store.wsgi.application'
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True # Set to True if using port 465
+EMAIL_HOST_USER = 'calemale360@gmail.com'  
+EMAIL_HOST_PASSWORD = 'uvhbrvrwhsynurjz'  
+DEFAULT_FROM_EMAIL = 'calemale360@gmail.com'
 
 
 # Database
