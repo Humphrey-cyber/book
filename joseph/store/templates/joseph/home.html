@@ -24,7 +24,7 @@
             <source media="(max-width: 1400px)" srcset="{{ homepage_content.banner_image.url }}">
             <source media="(max-width: 1700px)" srcset="{{ homepage_content.banner_image.url }}">
             <source media="(min-width: 1700px)" srcset="{{ homepage_content.banner_image.url }}">
-            <img src="{{ homepage_content.banner_image.url }}" alt="Banner" style="width: 100%; height: auto; display: block;">
+            <img src="{{ homepage_content.banner_image.url }}" alt="Banner" style="width: 100%; height: 100%; display: ">
         {% else %}
             <!-- Fallback static image if no dynamic image is set -->
             <img src="{% static 'images/default-banner.jpg' %}" alt="Default Banner" style="width: 100%; height: auto; display: block;">

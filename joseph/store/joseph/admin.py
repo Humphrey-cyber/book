@@ -13,7 +13,12 @@ class BooksAdmin(admin.ModelAdmin):
     )
 
 class PortfolioAdmin(admin.ModelAdmin):
-    list_display = ('title', 'description', 'image')
+    list_display = ('title', 'description', 'image', 'project_link')
+    fieldsets = (
+        (None, {
+            'fields': ('title', 'description', 'image', 'project_link')
+        }),
+    )
 
 class ProduceAdmin(admin.ModelAdmin):
     list_display = ('name', 'price')
