@@ -1,0 +1,69 @@
+{% extends 'partials/base.html' %}
+{% load static %}
+
+{% block title %}Contact Us - Financial Books{% endblock %}
+
+{% block content %}
+<section class="container py-5">
+    <h2 class="text-center mb-4">
+        <i class="fas fa-envelope"></i> Get in Touch
+    </h2>
+    <p class="lead text-center text-muted mb-5">We'd love to hear from you! Please fill out the form below to send us a message.</p>
+
+    <!-- Display Success/Error Messages -->
+    {% if messages %}
+    <div class="container mt-3">
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} text-center" role="alert">
+                {{ message }}
+            </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <form method="POST" action="">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="name">Your Name</label>
+                    <input type="text" class="form-control" id="name" name="name" placeholder="Enter your name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Your Email</label>
+                    <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="message">Message</label>
+                    <textarea class="form-control" id="message" name="message" rows="5" placeholder="Write your message here..." required></textarea>
+                </div>
+
+                <div class="text-center">
+                    <button type="submit" class="btn btn-primary btn-lg">
+                        <i class="fas fa-paper-plane"></i> Send Message
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+
+<section class="bg-light py-5">
+    <div class="container">
+        <h3 class="text-center mb-4"><i class="fas fa-phone-alt"></i> Contact Information</h3>
+        <div class="row text-center">
+            <div class="col-md-4">
+                <p><i class="fas fa-phone"></i> +254-80-575-1234</p>
+            </div>
+            <div class="col-md-4">
+                <p><i class="fas fa-envelope"></i> info@financialbooks.com</p>
+            </div>
+            <div class="col-md-4">
+                <p><i class="fas fa-map-marker-alt"></i> 123 Main St, Anytown, Kenya</p>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

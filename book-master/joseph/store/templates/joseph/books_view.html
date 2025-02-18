@@ -1,0 +1,322 @@
+{% extends 'partials/base.html' %}
+{% load static %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <style>
+        .custom-btn {
+        color: #D4AF37; /* Text color gold */
+        border: 2px solid #D4AF37; /* Gold border */
+        background-color: transparent; /* Transparent background */
+        padding: 0.5rem 1.5rem;
+        font-size: 1rem;
+        transition: all 0.3s ease-in-out;
+        position: relative;
+    }
+    .custom-btn:hover {
+        background-color: #D4AF37; /* Gold background */
+        color: white; /* White text */
+        filter: drop-shadow(0 0 17px #D4AF37); /* Gold glow */
+    }
+    .primary-btn {
+        color: white;
+        background-color: #D4AF37;
+        border: 2px solid #D4AF37;
+        padding: 0.5rem 1.5rem;
+        font-size: 1rem;
+        transition: all 0.3s ease-in-out;
+        position: relative;
+        margin-bottom: 20px;
+    }
+    .primary-btn:hover {
+        background-color: transparent;
+        color: #D4AF37;
+        filter: drop-shadow(0 0 17px #D4AF37);
+    }
+    </style>
+    
+<div class="container mt-5">
+    <div class="row">
+        <!-- Book Image Section -->
+        <div class="col-md-6">
+            <img src="{{ book.cover_image.url }}" class="img-fluid rounded" alt="{{ book.title }}" style="width: 100%; max-height: 600px; object-fit: cover;">
+        </div>
+
+        <!-- Book Details Section -->
+        <div class="col-md-6">
+            <h2 class="mb-3" style="font-size: 2rem; color: #333;">{{ book.title }}</h2>
+            <h3 class="text-muted" style="font-size: 1.5rem;">${{ book.price }}</h3>
+
+            <div class="my-4">
+                <button class="primary-btn" style="width: 100%; font-size: 1rem;" onclick="addToCart('{{ book.id }}', '{{ book.title }}', '{{ book.cover_image.url }}',' {{ book.price }}')">Add to Cart</button>
+                <button class="custom-btn" style="width: 100%; font-size: 1rem;"
+        onclick="buyNow('{{ book.id }}', '{{ book.title }}', '{{ book.cover_image.url }}', '{{ book.price }}', this)">
+    Buy Now
+</button>
+
+            </div>
+
+            <p class="mt-4" style="color: #666; font-size: 1rem; line-height: 1.6;">
+                {{ book.description }}
+            </p>
+
+            <p class="text-muted" style="font-size: 0.85rem;">
+                You will get a PDF ({{ book.file_size }}) file
+            </p>
+
+            <!-- Social Share Links -->
+            <div class="mt-3">
+                <span>Share:</span>
+                {% if book.facebook_link %}
+                    <a href="{{ book.facebook_link }}" target="_blank" class="mx-2 text-dark" style="font-size: 1.2rem;">
+                        <i class="fab fa-facebook"></i>
+                    </a>
+                {% endif %}
+                {% if book.twitter_link %}
+                    <a href="{{ book.twitter_link }}" target="_blank" class="mx-2 text-dark" style="font-size: 1.2rem;">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                {% endif %}
+                {% if book.instagram_link %}
+                    <a href="{{ book.instagram_link }}" target="_blank" class="mx-2 text-dark" style="font-size: 1.2rem;">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                {% endif %}
+                {% if book.whatsapp_link %}
+                    <a href="{{ book.whatsapp_link }}" target="_blank" class="mx-2 text-dark" style="font-size: 1.2rem;">
+                        <i class="fab fa-whatsapp"></i>
+                    </a>
+                {% endif %}
+                {% if book.youtube_link %}
+                    <a href="{{ book.youtube_link }}" target="_blank" class="mx-2 text-dark" style="font-size: 1.2rem;">
+                        <i class="fab fa-youtube"></i>
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Cart Panel -->
+<div class="cart-panel" id="cartPanel" style="position: fixed; top: 0; right: -400px; width: 400px; height: 100%; background-color: #fff; box-shadow: -2px 0 5px rgba(0, 0, 0, 0.5); transition: right 0.4s ease; padding: 20px; overflow-y: auto; z-index: 1000;">
+    <button class="close-cart" onclick="toggleCart()" style="position: absolute; top: 10px; right: 10px; background: transparent; border: none; font-size: 1.5rem; cursor: pointer; color: #333;">×</button>
+    <h2 style="font-size: 1.5rem; text-align: center; padding-bottom: 1rem; border-bottom: 1px solid #eee;">Your Cart</h2>
+
+    <div id="cartItems" style="margin-top: 20px;">
+        <!-- Cart items will be dynamically added here -->
+    </div>
+
+    <div class="cart-total" style="text-align: center; font-size: 1.2rem; font-weight: bold; margin: 20px 0;">
+        Total: KES <span id="cartTotal">0.00</span>
+    </div>
+    <button class="primary-btn" style="width: 100%; padding: 10px; font-size: 1rem; cursor: pointer; border-radius: 5px;" onclick="openCheckoutModal()">Proceed to Checkout</button>
+</div>
+
+<!-- Checkout Modal -->
+<div id="checkoutModal" class="modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000;">
+    <div class="modal-content" style="position: relative; background: white; max-width: 800px; margin: 5% auto; padding: 40px; border-radius: 12px; animation: zoomIn 0.5s;">
+        <span class="close" onclick="closeCheckoutModal()" style="position: absolute; top: 20px; right: 25px; cursor: pointer; font-size: 2rem;">&times;</span>
+        <h2 style="text-align: center; color: #D4AF37; font-size: 2.2rem; animation: bounce 1s infinite;">M-Pesa Payment</h2>
+
+        <!-- Payment Instructions -->
+        <p style="text-align: center; font-size: 1.3rem; color: #333; font-weight: bold;">
+            Hey there, ready to join the cool club? Please send your payment of 
+            <span style="color: #e63946;"> <span id="checkoutTotal">0.00</span></span> to this 
+            M-Pesa number(SENDMONEY): 
+            <span style="color: #ff6f61; font-weight: bold; font-size: 1.4rem;" id="mpesaNumber">0114456187</span>
+            <button onclick="copyToClipboard()" style="background-color: #D4AF37; color: white; border: none; padding: 5px 10px; font-size: 1rem; border-radius: 5px; cursor: pointer; margin-left: 10px;">Copy</button>
+        </p>
+        <p style="text-align: center; color: #555; font-style: italic; font-size: 1.1rem;">
+            ("Don't forget to flex your payment screenshot back to us. We love proof, and we're 
+            sure you do too! 🤑")
+        </p>
+
+        <!-- WhatsApp Button -->
+        <div style="text-align: center; margin-top: 30px;">
+            <a href="https://wa.me/1234567890" target="_blank" style="display: inline-block; text-decoration: none; background-color: #25D366; color: white; padding: 20px 30px; font-size: 1.4rem; border-radius: 8px; font-weight: bold;">
+                <i class="fab fa-whatsapp" style="margin-right: 10px;"></i> Send Screenshot on WhatsApp
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- CSS for Animations -->
+<style>
+    @keyframes zoomIn {
+        from {
+            transform: scale(0.5);
+            opacity: 0;
+        }
+        to {
+            transform: scale(1);
+            opacity: 1;
+        }
+    }
+
+    @keyframes bounce {
+        0%, 20%, 50%, 80%, 100% {
+            transform: translateY(0);
+        }
+        40% {
+            transform: translateY(-20px);
+        }
+        60% {
+            transform: translateY(-10px);
+        }
+    }
+</style>
+
+<!-- JavaScript for Copy to Clipboard -->
+<script>
+    function copyToClipboard() {
+        const mpesaNumber = document.getElementById("mpesaNumber").textContent;
+        navigator.clipboard.writeText(mpesaNumber).then(() => {
+            alert("M-Pesa number copied to clipboard!");
+        }).catch(err => {
+            alert("Failed to copy the number. Please try again.");
+        });
+    }
+
+    let cart = [];
+    let total = 0;
+    
+    // Initialize cart from localStorage
+    function initializeCart() {
+        const storedCart = localStorage.getItem('cart');
+        if (storedCart) {
+            cart = JSON.parse(storedCart);
+            total = cart.reduce((sum, item) => sum + item.price * 130, 0); // Convert total to KES
+            updateCartDisplay();
+        }
+    }
+    
+    // Function to toggle cart panel visibility
+    function toggleCart() {
+        const cartPanel = document.getElementById('cartPanel');
+        cartPanel.style.right = cartPanel.style.right === '0px' ? '-400px' : '0px';
+    }
+    
+    // Function to add item to cart and update item count
+    function addToCart(id, title, image, price) {
+        const item = {
+            id: id,
+            title: title,
+            image: image,
+            price: price
+        };
+        cart.push(item); // Add new instance to the cart array
+        total += price * 130; // Update total in KES
+    
+        // Save cart to localStorage
+        localStorage.setItem('cart', JSON.stringify(cart));
+    
+        updateCartDisplay();
+    
+        // Show a notification for adding to the cart
+        alert(`${title} added to the cart!`);
+    
+        // Update item count in cart icon
+        const itemCountElement = document.getElementById("itemCount");
+        itemCountElement.textContent = cart.length;
+        itemCountElement.style.display = 'block';
+    }
+    
+    // Function to update the cart display
+    function updateCartDisplay() {
+        const cartItemsContainer = document.getElementById("cartItems");
+        const cartTotalElement = document.getElementById("cartTotal");
+    
+        cartItemsContainer.innerHTML = ''; // Clear previous display
+    
+        // Iterate over each item in the cart array and display as a separate row
+        cart.forEach((item, index) => {
+            const cartItem = document.createElement("div");
+            cartItem.classList.add("cart-item");
+            cartItem.style.display = "flex";
+            cartItem.style.alignItems = "center";
+            cartItem.style.marginBottom = "15px";
+            cartItem.style.paddingBottom = "15px";
+            cartItem.style.borderBottom = "1px solid #eee";
+            
+            cartItem.innerHTML = `
+                <img src="${item.image}" alt="${item.title}" style="width: 80px; height: 80px; object-fit: cover; margin-right: 10px; border-radius: 5px;">
+                <div style="flex-grow: 1;">
+                    <h4 style="margin: 0;">${item.title}</h4>
+                    <div style="font-size: 0.9rem; color: #666;">Price: KES ${(item.price * 130).toFixed(2)}</div>
+                    <a href="javascript:void(0);" class="remove-link" style="color: #d9534f; font-size: 0.85rem; text-decoration: none;" onclick="removeFromCart(${index})">Remove</a>
+                </div>
+            `;
+            
+            cartItemsContainer.appendChild(cartItem);
+        });
+    
+        // Update cart total
+        cartTotalElement.textContent = total.toFixed(2);
+    
+        // Update item count in cart icon
+        const itemCountElement = document.getElementById("itemCount");
+        itemCountElement.textContent = cart.length;
+        if (cart.length > 0) {
+            itemCountElement.style.display = 'block';
+        } else {
+            itemCountElement.style.display = 'none';
+        }
+    }
+    
+    // Function to remove an item from the cart by index
+    function removeFromCart(index) {
+        const item = cart[index];
+        total -= item.price * 130; // Deduct the price from total in KES
+        cart.splice(index, 1); // Remove item from cart array
+    
+        // Save updated cart to localStorage
+        localStorage.setItem('cart', JSON.stringify(cart));
+    
+        updateCartDisplay();
+    }
+    
+    // Function to open the checkout modal
+    function openCheckoutModal() {
+        // Recalculate total to ensure it's up-to-date
+        total = cart.reduce((sum, item) => sum + item.price * 130, 0); // Convert total to KES
+    
+        // Display the total in the form
+        const checkoutTotalElement = document.getElementById("checkoutTotal");
+        if (checkoutTotalElement) {
+            checkoutTotalElement.textContent = `KES ${total.toFixed(2)}`;
+        }
+    
+        // Open the modal
+        document.getElementById("checkoutModal").style.display = "block";
+    }
+    
+    // Function to close the checkout modal
+    function closeCheckoutModal() {
+        document.getElementById("checkoutModal").style.display = "none";
+    }
+    
+    // Function to handle "Buy Now" button
+    function buyNow(id, title, image, price, button) {
+        // Check if the item is already in the cart
+        if (!cart.some(item => item.id === id)) {
+            addToCart(id, title, image, price); // Add the item to the cart if not already added
+        }
+    
+        // Change the button text to "Proceed to Checkout"
+        button.textContent = "Proceed to Checkout";
+        button.onclick = openCheckoutModal; // Update the button's onclick action
+    }
+    
+    // Initialize cart when the page loads
+    window.onload = initializeCart;
+    
+</script>
+{% endblock %}
+</body>
+</html>

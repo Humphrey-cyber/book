@@ -1,0 +1,73 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light" style="padding: 0.5rem 1rem;">
+    <a class="navbar-brand" href="{% url 'home' %}" style="font-weight: bold; font-size: 1.25rem;">
+        <img src="{% static 'images/logo.jpeg' %}" alt="Logo" width="90" height="90" class="d-inline-block align-text-top" style="border-radius: 50%; box-shadow: 0 0px 40px #FFD700">
+    </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ml-auto" style="font-size: 0.9rem;">
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'home' %}" style="padding: 1.5rem; font-weight: 600 ; font-size: 24px; ">Home</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="{% url 'books' %}" style="padding: 1.5rem; font-weight: 600 ; font-size: 24px; ">Books</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="{% url 'portfolio' %}" style="padding: 1.5rem; font-weight: 600 ; font-size: 24px;">Portfolio</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="{% url 'contact' %}" style="padding: 1.5rem; font-weight: 600 ; font-size: 24px;">Contact</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-light" href="javascript:void(0);" onclick="toggleCart()" style="padding: 1.5rem; transition: transform 0.2s;">
+                    <i class="fas fa-shopping-cart" style="font-size: 1.2rem; color: #FFC107; animation: bounce 2s infinite;"></i>
+                    <span id="itemCount" style="background-color: #25D366; border-radius: 50%; padding: 2px 8px; font-size: 0.9rem; margin-left: 5px; color: white;">0</span>
+                </a>
+            </li>
+            
+        </ul>
+    </div>
+</nav>
+<style>
+    .nav-item .nav-link {
+            position: relative;
+            color: black !important; /* Default text color */
+            transition: color 0.3s, text-shadow 0.3s, transform 0.3s;
+        }
+
+        /* Change text color to gold and apply glow on hover */
+        .nav-item .nav-link:hover {
+            color: #D4AF37 !important;
+        }
+
+         /* Underline effect */
+         .nav-item .nav-link::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            bottom: -3px;
+            width: 0%;
+            height: 2px;
+            color: #D4AF37;
+            background-color: #D4AF37;
+            transition: width 0.3s ease-in-out;
+        }
+
+        /* Expand underline on hover */
+        .nav-item .nav-link:hover::after {
+            width: 100%;
+        }
+</style>
+
+</body>
+</html>
